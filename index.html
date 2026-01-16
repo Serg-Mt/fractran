@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FRACTRAN compiler</title>
+  <link rel="stylesheet" href="style.sass">
+</head>
+
+<body>
+  <h1>FRACTRAN to JS Compiler</h1>
+  <main>
+    <input type="text" id="initial" value="2**27">
+    <textarea id="input">6655/1372 1715/5324 55/686 35/2662 605/343 245/1331 242/245 98/605 3/49 3/121 704/35 448/55 48/7 48/11 1331/4 3/2</textarea>
+    <button id="compile">compile</button>
+    <textarea id="output"></textarea>
+    <button id="run">run</button>
+    <textarea id="log"></textarea>
+  </main>
+  <script type="module" src="./src/main.ts"></script>
+</body>
+
+</html>
