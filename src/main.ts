@@ -1,3 +1,4 @@
+
 import { factorize, primeNumbersChain } from './primeNumbers';
 
 const
@@ -20,58 +21,54 @@ runButton.addEventListener('click', () => {
 function compile(initialNumber: number, text: string) {
   const
     fractions = text
-      .split(/\s/)
+      .trim()
+      .split(/[\s,;]+/)
       .map((f) =>
         Object.fromEntries(f.split("/").map((part, i) => ["ud"[i], Number(part)]))
       ),
-    all = [initialNumber, ...fractions.map(o => Object.values(o)).flat()];
-  all.forEach(factorize);
-  const
-    max = primeNumbersChain.length;
+    all = [initialNumber, ...fractions.map(o => Object.values(o)).flat()],
+    max = all.map(x => factorize(x).length).reduce((a, b) => Math.max(a, b), 0);
 
 
-  console.debug({ all, primeNumbersChain });
+  console.debug({ max, all });
 
   //let out = `\nlet\n\ta = ${initialNumber}, // $=2^${initialNumber}; \n`;
   let
     out = 'let\n\t';
   out += Object.assign(Array.from({ length: max }, () => 0), factorize(initialNumber)) // тут надо включить нули
     .map(x => x ?? 0)
-    .map(formatStartInit)
+    .map(formatVarSignVal('='))
     .join(`,\n\t`);
-  // out +=
-  //   Array.from({ length: max }, (_, i) => `\t${variableName(i + 1)}=0`)
-  //     .join(`,\n`);
-  out += ',\n\tcicles=0;\n\n';
-  out += `while(true){\n\tcicles++;\n`;
+  out += ',\n\tcycles=0;\n\n';
+  out += `while(true){\n\tcycles++;\n`;
   for (let fraction of fractions) {
     out +=
       "\tif (" +
       ((factorize(fraction.d)
-        .map((num, i) => formatCondition(i, num))
+        .map(formatVarSignVal('>='))
         .filter(Boolean)
         .join(" && ")) || 'true') +
       "){ " +
       factorize(fraction.d)
-        .map((num, i) => formatAssignment(i, num, "-"))
+        .map(formatVarSignVal('-='))
         .filter(Boolean)
         .join("; ") +
       "; " +
       factorize(fraction.u)
-        .map((num, i) => formatAssignment(i, num, "+"))
+        .map(formatVarSignVal('+='))
         .filter(Boolean)
         .join("; ") +
-      `; continue; } // (${fraction.u}/${fraction.d})\n`;
+      `; continue; } // (${fraction.u}/${fraction.d}`
+      + `= ${exponent(fraction.u)}/${exponent(fraction.d)})`
+      + `\n`;
   }
-  out += `\tbreak;\n};\n console.log('END',{\n` +
+  out += `\tbreak;\n};\n console.log('END',{cycles,\n` +
     Array.from({ length: max }, (_, i) => `${variableName(i)}`)
       .join(',')
-    + ',cicles});\n';
+    + '});\n';
 
   return out;
 }
-
-
 
 
 function run(textContent: string) {
@@ -108,14 +105,24 @@ function variableName(x: number) {
   // return String.fromCharCode(97 + x);
 }
 
-function formatStartInit(val: number, index: number) {
-  return `${variableName(index)} = ${val}`
+function formatVarSignVal(sign: string) {
+  return (val: number, index: number) => `${variableName(index)} ${sign} ${val}`;
 }
 
-function formatCondition(x: number, val: number) {
-  return `${variableName(x)} >= ${val}`;
+
+const superscriptDigits = '⁰¹²³⁴⁵⁶⁷⁸⁹'.split('');
+
+function toSuperscript(n: number) {
+  return n
+    .toString()
+    .split('')
+    .map(x => superscriptDigits[+x])
+    .join('')
 }
 
-function formatAssignment(x: number, val: number, sign: string) {
-  return `${variableName(x)} = ${variableName(x)} ${sign} ${val}`;
+function exponent(n: number) {
+  return factorize(n)
+    .map((n, i) => `${primeNumbersChain[i]}${toSuperscript(n)}`)
+    .filter(Boolean)
+    .join('·')
 }

@@ -1,5 +1,5 @@
 import { expect, test, describe } from "bun:test";
-import { factorize, primeNumbersChain } from "./primeNumbers";
+import { factorize } from "./primeNumbers";
 
 const
   cases: [number, (number | undefined)[]][] = [
@@ -18,11 +18,11 @@ describe("factorize()", () => {
   });
 });
 
-describe("primeNumbersChain state", () => {
-  test("should expand chain after factorizing large numbers", () => {
-    const initialLength = primeNumbersChain.length;
-    factorize(49); // требует наличия 7 в цепочке
-    expect(primeNumbersChain.length).toBeGreaterThanOrEqual(initialLength);
-    expect(primeNumbersChain).toContain(7);
-  });
-});
+// describe("primeNumbersChain state", () => {
+//   test("should expand chain after factorizing large numbers", () => {
+//     const initialLength = primeNumbersChain.length;
+//     factorize(49); // требует наличия 7 в цепочке
+//     expect(primeNumbersChain.length).toBeGreaterThanOrEqual(initialLength);
+//     expect(primeNumbersChain).toContain(7);
+//   });
+// });

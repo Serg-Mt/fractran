@@ -1,13 +1,13 @@
 export const
-  primeNumbersChain = [2, 3];
+  primeNumbersChain = [2, 3, 5, 7, 11],
+  factorizeCache = new Map<number, SparseArray>;
 
-const
-  factorizeCache = new Map<number, number[]>;
+
+type SparseArray = Record<number, number> & { length: number, map: typeof Array.prototype.map }
 
 /**
  * 
  * @param n Длина необходимого массива
- * @returns 
  */
 function addPrimeNumbers(n: number) {
   let
@@ -18,7 +18,7 @@ function addPrimeNumbers(n: number) {
     if (isPrime(next))
       primeNumbersChain.push(next);
   }
-  return primeNumbersChain;
+  // return primeNumbersChain;
 }
 
 
@@ -30,21 +30,19 @@ export function factorize(x: number) {
   if (result) return result;
 
   let
-    res = [] as number[],
+    res = [] as SparseArray,
     i = 0;
   while (x > 1) {
-    if (primeNumbersChain[i]) {
-      // res[i] ??= 0;
-      if (0 === x % primeNumbersChain[i]) {
-        res[i] = 1 + (res[i] ?? 0);
-        x /= primeNumbersChain[i];
-      } else {
-        i++
-      };
-    } else {
+    if (!primeNumbersChain[i])
       addPrimeNumbers(1 + primeNumbersChain.length);
-    }
+    if (0 === x % primeNumbersChain[i]) {
+      res[i] = 1 + (res[i] ?? 0);
+      x /= primeNumbersChain[i];
+    } else {
+      i++
+    };
   }
+
   factorizeCache.set(argument, res);
   return res;
 }
@@ -52,6 +50,5 @@ export function factorize(x: number) {
 function isPrime(p: number) {
   for (let prime of primeNumbersChain)
     if (0 == p % prime) return false;
-
   return true;
 }
