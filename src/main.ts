@@ -1,4 +1,3 @@
-
 import { factorize, primeNumbersChain } from './primeNumbers';
 
 const
@@ -10,8 +9,7 @@ const
 
 
 compButton.addEventListener('click', () => {
-  console.debug('compButton click');
-  output.value = compile(eval(initial.value), input.value);
+  output.value = compile((0, eval)(initial.value), input.value);
 });
 
 runButton.addEventListener('click', () => {
@@ -30,7 +28,7 @@ function compile(initialNumber: number, text: string) {
     max = all.map(x => factorize(x).length).reduce((a, b) => Math.max(a, b), 0);
 
 
-  console.debug({ max, all });
+  // console.debug({ max, all });
 
   //let out = `\nlet\n\ta = ${initialNumber}, // $=2^${initialNumber}; \n`;
   let
@@ -48,7 +46,7 @@ function compile(initialNumber: number, text: string) {
         .map(formatVarSignVal('>='))
         .filter(Boolean)
         .join(" && ")) || 'true') +
-      "){ " +
+      ") { " +
       factorize(fraction.d)
         .map(formatVarSignVal('-='))
         .filter(Boolean)
@@ -62,7 +60,7 @@ function compile(initialNumber: number, text: string) {
       + `= ${exponent(fraction.u)}/${exponent(fraction.d)})`
       + `\n`;
   }
-  out += `\tbreak;\n};\n console.log('END',{cycles,\n` +
+  out += `\tbreak;\n}\nconsole.log('END',{cycles,` +
     Array.from({ length: max }, (_, i) => `${variableName(i)}`)
       .join(',')
     + '});\n';
@@ -101,8 +99,6 @@ function getAlphaName(x: number) {
 
 function variableName(x: number) {
   return getAlphaName(x);// + '_' + primeNumbersChain[x];
-  // return String.fromCharCode(97 + x) + '_' + x;
-  // return String.fromCharCode(97 + x);
 }
 
 function formatVarSignVal(sign: string) {
@@ -110,7 +106,8 @@ function formatVarSignVal(sign: string) {
 }
 
 
-const superscriptDigits = '⁰¹²³⁴⁵⁶⁷⁸⁹'.split('');
+const
+  superscriptDigits = '⁰¹²³⁴⁵⁶⁷⁸⁹'.split('');
 
 function toSuperscript(n: number) {
   return n

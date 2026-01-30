@@ -2,7 +2,6 @@ export const
   primeNumbersChain = [2, 3, 5, 7, 11],
   factorizeCache = new Map<number, SparseArray>;
 
-
 type SparseArray = Record<number, number> & { length: number, map: typeof Array.prototype.map }
 
 /**
@@ -20,8 +19,6 @@ function addPrimeNumbers(n: number) {
   }
   // return primeNumbersChain;
 }
-
-
 
 export function factorize(x: number) {
   const
